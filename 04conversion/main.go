@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -13,16 +14,15 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 	readerData, _ := reader.ReadString('\n')
 
-	fmt.Println("Thanks For Rating, ", readerData)
+	fmt.Println("Thanks For Rating,", readerData)
 
-	dataParsed, parseError := strconv.ParseFloat(readerData, 64) // trim spaces before parsing
+	dataParsed, parseError := strconv.ParseFloat(strings.TrimSpace(readerData), 64)
 	if parseError != nil {
-		fmt.Println("caught error")
+		fmt.Println("caught error in parsing data")
 		fmt.Println(parseError)
 
 	} else {
-		newValue := dataParsed + 1
-		fmt.Println(newValue)
-		fmt.Println(dataParsed)
+		newValue := dataParsed + 4
+		fmt.Println("added 4 to your rating", newValue)
 	}
 }
