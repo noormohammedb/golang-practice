@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 func main() {
 	// var fruitList = []string{"mango", "apple", "banana"}
@@ -15,8 +18,32 @@ func main() {
 
 	fmt.Println("full list: ", fruitList)
 
-	fruitList = append(fruitList[:2], fruitList[3:]...) // remove item 2
+	var index int = 2
+
+	fruitList = append(fruitList[:index], fruitList[index+1:]...) // remove item 2
 
 	fmt.Println(fruitList)
 	// fmt.Println(fruitList[2:5])
+
+	scores := make([]int, 3)
+
+	scores[0] = 11
+	scores[1] = 44
+	scores[2] = 34
+	// scores[3] = 22 // getting error, index out of range
+
+	fmt.Println("dynamic slice")
+	fmt.Println(scores)
+	// fmt.Println(len(scores))
+
+	scores = append(scores, 77, 33, 00, 22) // allocate more spaces to scores
+	// fmt.Println(append(scores, 77, 33, 00, 22))
+	fmt.Println(scores)
+
+	// fmt.Println(sort.IntsAreSorted(scores))
+	fmt.Println("sorting")
+	sort.Ints(scores)
+	fmt.Println(scores)
+
+	// fmt.Println(sort.IntsAreSorted(scores))
 }
