@@ -20,10 +20,24 @@ func main() {
 	}
 
 	sayHai(calc) // normal function declaration not allowed in main
+
+	// values := []int{4, 6, 2, 4}
+	// sum := proCalc(values...)
+	sum := proCalc(5, 6, 7)
+
+	fmt.Println(sum)
 }
 
 func calc(numOne, numTwo int) (int, string) {
 	return numOne + numTwo, "Added"
+}
+
+func proCalc(numbers ...int) int {
+	sum := 0
+	for _, number := range numbers {
+		sum += number
+	}
+	return sum
 }
 
 func sayHello() {
