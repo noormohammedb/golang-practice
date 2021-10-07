@@ -28,6 +28,11 @@ func main() {
 
 	// like whileLook
 	for dumpValue <= 10 {
+		if dumpValue == 5 {
+			dumpValue++
+			continue
+			// break
+		}
 		fmt.Print(dumpValue, ", ")
 		dumpValue++
 	}
