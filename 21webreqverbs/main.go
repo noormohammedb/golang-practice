@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 func main() {
-	fmt.Println("web requests\nGET")
-	GetMethod("http://localhost:8000/get")
-	fmt.Println("POST")
-	PostJsonMethod("http://localhost:8000/post")
+	// fmt.Println("web requests\nGET")
+	// GetMethod("http://localhost:8000/get")
+	// fmt.Println("POST")
+	// PostJsonMethod("http://localhost:8000/post")
+	// fmt.Println("POST - form")
+	PostFormMethod("http://localhost:8000/postform")
 }
 
 func GetMethod(url string) {
@@ -55,6 +58,23 @@ func PostJsonMethod(url string) {
 	contest, _ := ioutil.ReadAll(response.Body)
 
 	fmt.Println("response : ", string(contest))
+}
+
+func PostFormMethod(myUrl string) {
+
+	myData := url.Values{}
+	myData.Add("firstName", "myFirstName")
+	myData.Add("lastName", "myLastName")
+	myData.Add("email", "email@example.com")
+
+	formResponse, err := http.PostForm(myUrl, myData)
+	checkNotNill(err)
+
+	defer formResponse.Body.Close()
+
+	resContent, _ := ioutil.ReadAll(formResponse.Body)
+
+	fmt.Println(string(resContent))
 }
 
 func checkNotNill(err error) {
