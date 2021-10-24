@@ -14,7 +14,8 @@ type course struct {
 }
 
 func main() {
-	EncodeJson()
+	// EncodeJson()
+	DecodeJson()
 }
 
 func EncodeJson() {
@@ -34,7 +35,36 @@ func EncodeJson() {
 
 	// fmt.Println(string(finalJson))
 	fmt.Printf("%s", finalJson)
+}
 
+func DecodeJson() {
+	JsonDataFromWeb := []byte(`{
+  "courseName": "React",
+  "price": 149,
+  "website": "learncodeonline.com",
+  "keywords": ["js","web","spa"]
+	}`)
+
+	// var lcoCourse map[string]interface{}
+	var lcoCourse course
+
+	isValidJson := json.Valid(JsonDataFromWeb)
+	if isValidJson {
+		fmt.Println("json in valid")
+		json.Unmarshal(JsonDataFromWeb, &lcoCourse)
+		fmt.Printf("%#v\n", lcoCourse)
+	} else {
+		fmt.Println("json in invalid")
+	}
+
+	var myOnlineData map[string]interface{}
+
+	json.Unmarshal(JsonDataFromWeb, &myOnlineData)
+	fmt.Printf("\n%#v\n", myOnlineData)
+
+	for keyOfVal, value := range myOnlineData {
+		fmt.Printf("%#v %#v \n", keyOfVal, value)
+	}
 }
 
 func checkNotNill(err error) {
