@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -11,9 +12,9 @@ func main() {
 	greeter()
 
 	webRoute := mux.NewRouter()
-	webRoute.NewRoute().HandlerFunc(serveHome)
+	webRoute.NewRoute().HandlerFunc(serveHome).Methods("GET")
 
-	http.ListenAndServe(":8000", webRoute)
+	log.Fatal(http.ListenAndServe(":8000", webRoute))
 }
 
 func greeter() {
@@ -23,6 +24,7 @@ func greeter() {
 
 func serveHome(w http.ResponseWriter, r *http.Request) {
 
-	w.Write([]byte("<h2> Hello World From GO-Lang Server </h2>"))
+	fmt.Println("Requested")
+	w.Write([]byte("<h1> Hello World From GO-Lang Server </h1>"))
 
 }
