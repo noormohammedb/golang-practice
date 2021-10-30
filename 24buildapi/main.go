@@ -41,6 +41,7 @@ func main() {
 	muxRoute.HandleFunc("/course", createCourse).Methods("post")
 	muxRoute.HandleFunc("/course/{id}", updateCourse).Methods("put")
 	muxRoute.HandleFunc("/course/{id}", deleteACourse).Methods("delete")
+	muxRoute.HandleFunc("/courses/all", deleteAllCourse).Methods("delete")
 	muxRoute.HandleFunc("/{*}", fourNotFour)
 
 	// seeding data
@@ -148,6 +149,16 @@ func deleteACourse(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("can't find element for delete")
 	w.Write([]byte("request error"))
+}
+
+func deleteAllCourse(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Request Delete All Course")
+	if len(courses) > 0 {
+		courses = []Course{}
+		json.NewEncoder(w).Encode("success")
+		return
+	}
+	json.NewEncoder(w).Encode("no data to delete")
 }
 
 func fourNotFour(w http.ResponseWriter, r *http.Request) {
