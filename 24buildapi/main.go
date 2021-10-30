@@ -40,7 +40,7 @@ func main() {
 	muxRoute.HandleFunc("/course/{id}", getOneCourse).Methods("get")
 	muxRoute.HandleFunc("/course", createCourse).Methods("post")
 	muxRoute.HandleFunc("/course/{id}", updateCourse).Methods("put")
-	muxRoute.HandleFunc("/course", deleteACourse).Methods("delete")
+	muxRoute.HandleFunc("/course/{id}", deleteACourse).Methods("delete")
 	muxRoute.HandleFunc("/{*}", fourNotFour)
 
 	// seeding data
@@ -128,13 +128,26 @@ func updateCourse(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	fmt.Println("can't find element")
+	fmt.Println("can't find element for update")
 	w.Write([]byte("request error"))
 }
 
 func deleteACourse(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Request delete course need to wire logic")
-	w.Write([]byte("contact administrator"))
+	fmt.Println("Request delete course")
+	parms := mux.Vars(r)
+	for sliceIndex, courseData := range courses {
+		fmt.Println(sliceIndex)
+		fmt.Println(courseData)
+		if parms["id"] == courseData.CourseId {
+			fmt.Println("Course Id Matched")
+			courses = append(courses[:sliceIndex], courses[sliceIndex+1:]...)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(courseData)
+			return
+		}
+	}
+	fmt.Println("can't find element for delete")
+	w.Write([]byte("request error"))
 }
 
 func fourNotFour(w http.ResponseWriter, r *http.Request) {
