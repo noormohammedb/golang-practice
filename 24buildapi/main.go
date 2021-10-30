@@ -39,7 +39,7 @@ func main() {
 	muxRoute.HandleFunc("/allcourse", getAllCourses).Methods("get")
 	muxRoute.HandleFunc("/course/{id}", getOneCourse).Methods("get")
 	muxRoute.HandleFunc("/course", createCourse).Methods("post")
-	muxRoute.HandleFunc("/course", updateCourse).Methods("put")
+	muxRoute.HandleFunc("/course/{id}", updateCourse).Methods("put")
 	muxRoute.HandleFunc("/course", deleteACourse).Methods("delete")
 	muxRoute.HandleFunc("/{*}", fourNotFour)
 
@@ -103,8 +103,51 @@ func createCourse(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateCourse(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Request update course need to write logic")
-	w.Write([]byte("contact administrator"))
+	fmt.Println("Request update course")
+	params := mux.Vars(r)
+	fmt.Println(params)
+	fmt.Println(params["id"])
+	if params["id"] == "" {
+		fmt.Println("empty params")
+		w.Write([]byte("request error"))
+		return
+	} else if params == nil {
+		fmt.Println("params nill")
+		w.Write([]byte("request error"))
+		return
+	} else if params["id"] == "0" {
+		fmt.Println("params zero")
+		w.Write([]byte("request error"))
+		return
+	}
+	var userCourseToEdit Course
+	decodedJsonBody := json.NewDecoder(r.Body)
+	err := decodedJsonBody.Decode(&userCourseToEdit)
+	if err != nil {
+		fmt.Println("user json data validation error")
+		w.Write([]byte("request error"))
+		return
+	}
+	fmt.Println(userCourseToEdit)
+	editId, _ := strconv.Atoi(params["id"])
+	if userCourseToEdit.IsEmpty() {
+		fmt.Println("user course is invalid")
+		w.Write([]byte("request error"))
+		return
+	}
+	if editId > len(courses) {
+		fmt.Println("edit index invalid")
+		fmt.Println("data length : ", len(courses), "edit index : ", editId)
+		w.Write([]byte("request error"))
+		return
+	}
+
+	courses = append(courses[:editId-1], courses[editId:]...)
+	userCourseToEdit.CourseId = params["id"]
+	courses = append(courses, userCourseToEdit)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(userCourseToEdit)
 }
 
 func deleteACourse(w http.ResponseWriter, r *http.Request) {
