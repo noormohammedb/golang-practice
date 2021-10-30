@@ -97,6 +97,14 @@ func createCourse(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		w.Write([]byte("Error, Invalid Data"))
 		return
+	} else {
+		for _, courseData := range courses {
+			if userCourse.CourseName == courseData.CourseName {
+				fmt.Println("Duplicate Course")
+				w.Write([]byte("Course Exist"))
+				return
+			}
+		}
 	}
 	userCourse.CourseId = strconv.Itoa(len(courses) + 1)
 	courses = append(courses, userCourse)
