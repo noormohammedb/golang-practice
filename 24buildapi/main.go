@@ -43,8 +43,8 @@ func main() {
 	muxRoute.HandleFunc("/{*}", fourNotFour)
 
 	// seeding data
-	courses = append(courses, Course{CourseId: "courseId-1", CourseName: "courseName-1", CoursePrice: 333, Author: &Author{FullName: "author-1", Website: "www.author1.com"}})
-	courses = append(courses, Course{CourseId: "courseId-2", CourseName: "courseName-2", CoursePrice: 444, Author: &Author{FullName: "author-2", Website: "www.author2.com"}})
+	courses = append(courses, Course{CourseId: "1", CourseName: "courseName-1", CoursePrice: 333, Author: &Author{FullName: "author-1", Website: "www.author1.com"}})
+	courses = append(courses, Course{CourseId: "2", CourseName: "courseName-2", CoursePrice: 444, Author: &Author{FullName: "author-2", Website: "www.author2.com"}})
 
 	log.Fatal(http.ListenAndServe(":8080", muxRoute))
 }
@@ -66,9 +66,15 @@ func getOneCourse(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Requested One Course")
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
-	fmt.Println("needs to write logic")
-	fmt.Println(params)
-	json.NewEncoder(w).Encode(courses[0])
+	fmt.Println(params["id"])
+	for _, value := range courses {
+		if value.CourseId == params["id"] {
+			json.NewEncoder(w).Encode(value)
+			return
+		}
+	}
+	w.Write([]byte("{course_not_found: true}"))
+	// json.NewEncoder(w).Encode(interface{"ky":"va"})
 }
 
 func createCourse(w http.ResponseWriter, r *http.Request) {
