@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -25,7 +26,7 @@ type Author struct {
 // middleware,helper - file
 
 func (c *Course) IsEmpty() bool {
-	return c.CourseId == ""
+	return c.CourseName == ""
 }
 
 // DataBase
@@ -73,25 +74,30 @@ func getOneCourse(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	w.Write([]byte("{course_not_found: true}"))
+	w.Write([]byte("{course_not_found:" + params["id"] + "}"))
 	// json.NewEncoder(w).Encode(interface{"ky":"va"})
 }
 
 func createCourse(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("requested create course")
-	// check if the body is empty
-	w.Header().Set("Content-Type", "application/json")
 
 	var userCourse Course
 	json.NewDecoder(r.Body).Decode(&userCourse)
 	fmt.Println(userCourse)
 
-	if userCourse.IsEmpty() {
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Body == nil {
+		fmt.Println("body is empty")
+		w.Write([]byte("Error, Invalid Data"))
+		return
+	} else if userCourse.IsEmpty() {
 		fmt.Println("data is invalid")
 		w.WriteHeader(400)
 		w.Write([]byte("Error, Invalid Data"))
 		return
 	}
+	userCourse.CourseId = strconv.Itoa(len(courses) + 1)
 	courses = append(courses, userCourse)
 	w.Write([]byte("success"))
 }
