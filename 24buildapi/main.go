@@ -107,19 +107,7 @@ func updateCourse(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	fmt.Println(params)
 	fmt.Println(params["id"])
-	if params["id"] == "" {
-		fmt.Println("empty params")
-		w.Write([]byte("request error"))
-		return
-	} else if params == nil {
-		fmt.Println("params nill")
-		w.Write([]byte("request error"))
-		return
-	} else if params["id"] == "0" {
-		fmt.Println("params zero")
-		w.Write([]byte("request error"))
-		return
-	}
+
 	var userCourseToEdit Course
 	decodedJsonBody := json.NewDecoder(r.Body)
 	err := decodedJsonBody.Decode(&userCourseToEdit)
@@ -128,26 +116,20 @@ func updateCourse(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("request error"))
 		return
 	}
-	fmt.Println(userCourseToEdit)
-	editId, _ := strconv.Atoi(params["id"])
-	if userCourseToEdit.IsEmpty() {
-		fmt.Println("user course is invalid")
-		w.Write([]byte("request error"))
-		return
-	}
-	if editId > len(courses) {
-		fmt.Println("edit index invalid")
-		fmt.Println("data length : ", len(courses), "edit index : ", editId)
-		w.Write([]byte("request error"))
-		return
-	}
 
-	courses = append(courses[:editId-1], courses[editId:]...)
-	userCourseToEdit.CourseId = params["id"]
-	courses = append(courses, userCourseToEdit)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(userCourseToEdit)
+	for sliceIndex, courseData := range courses {
+		if courseData.CourseId == params["id"] {
+			fmt.Println("Course Id Matched")
+			courses = append(courses[:sliceIndex], courses[sliceIndex+1:]...)
+			userCourseToEdit.CourseId = params["id"]
+			courses = append(courses, userCourseToEdit)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(userCourseToEdit)
+			return
+		}
+	}
+	fmt.Println("can't find element")
+	w.Write([]byte("request error"))
 }
 
 func deleteACourse(w http.ResponseWriter, r *http.Request) {
