@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/noormohammedb/mongoapi/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -134,4 +135,20 @@ func CreateMovie(w http.ResponseWriter, r *http.Request) {
 	dbInsertOneMovie(userMovie)
 
 	json.NewEncoder(w).Encode(userMovie)
+}
+
+func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	params := mux.Vars(r)
+	fmt.Println(params)
+
+	if params["id"] == "" {
+		fmt.Println("params id empty : ", params["id"])
+		w.Write([]byte("request error"))
+		return
+	}
+	dbUpdateOneMovie(params["id"])
+	json.NewEncoder(w).Encode("success")
 }
