@@ -139,7 +139,7 @@ func CreateMovie(w http.ResponseWriter, r *http.Request) {
 
 func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
 
 	params := mux.Vars(r)
 	fmt.Println(params)
@@ -150,5 +150,20 @@ func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	dbUpdateOneMovie(params["id"])
+	json.NewEncoder(w).Encode("success")
+}
+
+func DeleteAMovie(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	params := mux.Vars(r)
+	if params["id"] == "" {
+
+		fmt.Println("params id empty : ", params["id"])
+		w.Write([]byte("request error"))
+		return
+	}
+	dbDeleteOneMovie(params["id"])
 	json.NewEncoder(w).Encode("success")
 }
