@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/noormohammedb/mongoapi/model"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -49,4 +52,19 @@ func insertOneMovie(movie model.Netflix) {
 	}
 
 	fmt.Println("Inserted 1 movie in db with id: ", inserted.InsertedID)
+}
+
+func updateOneMovie(movieId string) {
+
+	id, _ := primitive.ObjectIDFromHex(movieId)
+	fmt.Println("movie update id: ", id)
+
+	filer := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"watched": true}}
+
+	dbResponse, err := collection.UpdateOne(context.Background(), filer, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("update result: ", dbResponse)
 }
