@@ -2,8 +2,10 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/noormohammedb/mongoapi/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -41,9 +43,7 @@ func init() {
 
 // MongoDB helper  -- file
 
-// insert 1 record
-
-func insertOneMovie(movie model.Netflix) {
+func dbInsertOneMovie(movie model.Netflix) {
 
 	inserted, err := collection.InsertOne(context.Background(), movie)
 
@@ -54,7 +54,7 @@ func insertOneMovie(movie model.Netflix) {
 	fmt.Println("Inserted 1 movie in db with id: ", inserted.InsertedID)
 }
 
-func updateOneMovie(movieId string) {
+func dbUpdateOneMovie(movieId string) {
 
 	id, _ := primitive.ObjectIDFromHex(movieId)
 	fmt.Println("movie update id: ", id)
@@ -69,7 +69,7 @@ func updateOneMovie(movieId string) {
 	fmt.Println("update result: ", dbResponse)
 }
 
-func deleteOneMovie(movieId string) {
+func dbDeleteOneMovie(movieId string) {
 
 	id, _ := primitive.ObjectIDFromHex(movieId)
 	filter := bson.M{"_id": id}
@@ -84,7 +84,7 @@ func deleteOneMovie(movieId string) {
 
 // delete all records form Database
 
-func deleleAllMovie() int64 {
+func dbDeleleAllMovie() int64 {
 
 	dbRes, err := collection.DeleteMany(context.Background(), bson.D{{}})
 	if err != nil {
@@ -95,7 +95,7 @@ func deleleAllMovie() int64 {
 	return dbRes.DeletedCount
 }
 
-func getAllMovies() []primitive.M {
+func dbGetAllMovies() []primitive.M {
 	dbCursr, err := collection.Find(context.Background(), bson.D{{}})
 
 	if err != nil {
@@ -115,4 +115,12 @@ func getAllMovies() []primitive.M {
 
 	defer dbCursr.Close(context.Background())
 	return movies
+}
+
+// Controller -- file
+
+func getMyAllMovies(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	allMovies := dbGetAllMovies()
+	json.NewEncoder(w).Encode(allMovies)
 }
