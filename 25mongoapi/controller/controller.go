@@ -35,3 +35,18 @@ func init() {
 
 	fmt.Println("Collection Instance Is Ready")
 }
+
+// MongoDB helper  -- file
+
+// insert 1 record
+
+func insertOneMovie(movie model.Netflix) {
+
+	inserted, err := collection.InsertOne(context.Background(), movie)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Inserted 1 movie in db with id: ", inserted.InsertedID)
+}
