@@ -119,8 +119,19 @@ func dbGetAllMovies() []primitive.M {
 
 // Controller -- file
 
-func getMyAllMovies(w http.ResponseWriter, r *http.Request) {
+func GetMyAllMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	allMovies := dbGetAllMovies()
 	json.NewEncoder(w).Encode(allMovies)
+}
+
+func CreateMovie(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	var userMovie model.Netflix
+	json.NewDecoder(r.Body).Decode(&userMovie)
+	dbInsertOneMovie(userMovie)
+
+	json.NewEncoder(w).Encode(userMovie)
 }
