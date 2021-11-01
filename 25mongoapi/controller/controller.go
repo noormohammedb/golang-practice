@@ -107,12 +107,12 @@ func dbGetAllMovies() []primitive.M {
 	for dbCursr.Next(context.Background()) {
 		var movie bson.M
 		err := dbCursr.Decode(&movie)
-
 		if err != nil {
 			log.Fatal(err)
 		}
 		movies = append(movies, movie)
 	}
+	fmt.Println(movies)
 
 	defer dbCursr.Close(context.Background())
 	return movies
