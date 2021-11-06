@@ -15,7 +15,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const connectionString = "mongodb+srv://golang-user:golang-password@cluster0.ichzt.mongodb.net/golang-api?retryWrites=true&w=majority"
+// this databse is only for learing purpose and deleted after testing this api
+const connectionString = "MONGODB DATABSE URI"
 
 const dbName = "golang-api"
 const collName = "netflix-watchlist"
